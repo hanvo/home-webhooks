@@ -16,10 +16,10 @@ struct Info {
 async fn send_webhook(input: Info) -> Result<(), Error> {
   let id: &'static str = env!("id");
   let token: &'static str = env!("token");
-  let url: &'static str = format!("https://discord.com/api/webhooks/{id}/{token}");
+  let url  = format!("https://discord.com/api/webhooks/{id}/{token}");
   
-  let current_time: &'static str = format!("{}", Local::now().format("%H:%M:%S"));
-  let content: &'static str = format!("{} : Status: {} - {} \n@everyone", &input.applianace, &input.status, current_time);
+  let current_time = format!("{}", Local::now().format("%H:%M:%S"));
+  let content = format!("{} : Status: {} - {} \n@everyone", &input.applianace, &input.status, current_time);
   
   let client: WebhookClient = WebhookClient::new(&url);
   match client.send(|message|  message.username("HomeKit").content(&content)).await 
