@@ -1,5 +1,5 @@
 use anyhow::{Error, Result};
-use chrono::Local;
+use chrono::{Local, Timelike};
 use log::{info, debug, error};
 use serde_derive::{Deserialize, Serialize};
 use std::convert::Infallible;
@@ -13,13 +13,26 @@ struct Info {
     status: String,
 }
 
+fn format_current_time() -> String {
+  let time_now = Local::now();
+  let timestamp_tuple = time_now.hour12();
+
+  let hour_in_12_format = timestamp_tuple.1;
+  let meridiem = if timestamp_tuple.0 {
+    "PM"
+  } else {
+    "AM"
+  };
+
+  format!("{}:{} {}", hour_in_12_format, time_now.format("%M:%S"), meridiem)
+}
+
 async fn send_webhook(input: Info) -> Result<(), Error> {
   let id: &'static str = env!("id");
   let token: &'static str = env!("token");
   let url  = format!("https://discord.com/api/webhooks/{id}/{token}");
-  
-  let current_time = format!("{}", Local::now().format("%H:%M:%S"));
-  let content = format!("{} : Status: {} - {} \n@everyone", &input.applianace, &input.status, current_time);
+
+  let content = format!("{} : Status: {} - {} \n@everyone", &input.applianace, &input.status, format_current_time());
   
   let client: WebhookClient = WebhookClient::new(&url);
   match client.send(|message|  message.username("HomeKit").content(&content)).await 
