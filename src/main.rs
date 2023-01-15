@@ -69,6 +69,6 @@ async fn main() {
   let put_route = warp::post().and(discord_webhook);
   let routes = get_route.or(put_route);
 
-  info!("Serving: 127.0.0.1 on port: 3333");
-  warp::serve(routes).run(([127, 0, 0, 1], 3333)).await;
+  info!("Serving on port: 23498");
+  warp::serve(routes).run(([0, 0, 0, 0], 23498)).await;
 }
