@@ -28,8 +28,8 @@ fn format_current_time() -> String {
 }
 
 async fn send_webhook(input: Info) -> Result<(), Error> {
-  let id: &'static str = env!("id");
-  let token: &'static str = env!("token");
+  let id = std::env::var("id")?;
+  let token = std::env::var("token")?;
   let url  = format!("https://discord.com/api/webhooks/{id}/{token}");
 
   let content = format!("{} : Status: {} - {} \n@everyone", &input.applianace, &input.status, format_current_time());
